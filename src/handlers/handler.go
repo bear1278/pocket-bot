@@ -47,13 +47,17 @@ func (h *Handler) HandleCommand(update tgbotapi.Update) {
 		}
 	} else if update.Message.Command() == "links" {
 		var sb strings.Builder
-		i := int64(1)
-		for _, link := range h.storage[id] {
-			sb.WriteString(strconv.FormatInt(i, 10))
-			sb.WriteString(". ")
-			sb.WriteString(link)
-			sb.WriteString("\n")
-			i++
+		if len(h.storage[id]) == 0 {
+			sb.WriteString("list of links are empty")
+		} else {
+			i := int64(1)
+			for _, link := range h.storage[id] {
+				sb.WriteString(strconv.FormatInt(i, 10))
+				sb.WriteString(". ")
+				sb.WriteString(link)
+				sb.WriteString("\n")
+				i++
+			}
 		}
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, sb.String())
 		_, err := h.bot.Send(msg)
