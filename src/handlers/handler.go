@@ -60,5 +60,14 @@ func (h *Handler) HandleCommand(update tgbotapi.Update) {
 		if err != nil {
 			log.Println(err)
 		}
+	} else if update.Message.Command() == "clear" {
+		if _, ok := h.storage[id]; ok {
+			h.storage[id] = []string{}
+		}
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "All links are cleared")
+		_, err := h.bot.Send(msg)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
