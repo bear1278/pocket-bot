@@ -8,13 +8,6 @@ type Config struct {
 
 func Init() (*Config, error) {
 	var config Config
-	//viper.AddConfigPath("config")
-	//viper.SetConfigName("config")
-	//err := viper.ReadInConfig()
-	//if err != nil {
-	//	return nil, err
-	//}
-	//config.Token = viper.GetString("token")
 	if err := ParseEnv(&config); err != nil {
 		return nil, err
 	}
