@@ -3,7 +3,8 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	Token string `mapstructure:"token"`
+	Token      string `mapstructure:"token"`
+	WebhookUrl string `mapstructure:"webhook"`
 }
 
 func Init() (*Config, error) {
@@ -15,12 +16,13 @@ func Init() (*Config, error) {
 }
 
 func ParseEnv(cfg *Config) error {
-
-	if err := viper.BindEnv("token"); err != nil {
+	viper.AutomaticEnv()
+	if err := viper.BindEnv("token", "TOKEN", "webhook", "WEBHOOK"); err != nil {
 		return err
 	}
 
 	cfg.Token = viper.GetString("token")
+	cfg.WebhookUrl = viper.GetString("webhook")
 	return nil
 
 }

@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 type Handler struct {
@@ -39,8 +41,13 @@ func (h *Handler) HandleCommand(update tgbotapi.Update) {
 	id := update.Message.From.ID
 	if update.Message.Command() == "setlink" {
 		link := update.Message.CommandArguments()
-		h.storage[id] = append(h.storage[id], link)
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Link was saved")
+		var msg tgbotapi.MessageConfig
+		if isValidURL(link) {
+			h.storage[id] = append(h.storage[id], link)
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Link was saved")
+		} else {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Not valid URL")
+		}
 		_, err := h.bot.Send(msg)
 		if err != nil {
 			log.Println(err)
@@ -74,4 +81,13 @@ func (h *Handler) HandleCommand(update tgbotapi.Update) {
 			log.Println(err)
 		}
 	}
+}
+
+func isValidURL(rawURL string) bool {
+	u, err := url.ParseRequestURI(rawURL)
+	if err != nil {
+		return false
+	}
+
+	return u.Scheme != "" && u.Host != ""
 }
