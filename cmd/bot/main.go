@@ -30,9 +30,7 @@ func main() {
 	updates := bot.ListenForWebhook("/telegram/webhook")
 
 	go func() {
-		log.Println("HTTP server started on :8080")
-
-		if err := http.ListenAndServe(":8080", nil); err != nil {
+		if err = http.ListenAndServe(":8080", nil); err != nil {
 			log.Fatal(err)
 		}
 	}()
